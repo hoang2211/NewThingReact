@@ -1,4 +1,5 @@
     import { useState } from 'react';
+    import "./Style.css"
     
     function Square({ value, onSquareClick }) {
     return (
