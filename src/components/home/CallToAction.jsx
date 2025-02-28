@@ -1,6 +1,6 @@
-import { AppStoreLink } from '@/components/AppStoreLink'
-import { CircleBackground } from '@/components/CircleBackground'
-import { Container } from '@/components/Container'
+import { AppStoreLink } from '@/components/demo/AppStoreLink'
+import { CircleBackground } from '@/components/demo/CircleBackground'
+import { Container } from '@/components/common/Container'
 
 export function CallToAction() {
   return (

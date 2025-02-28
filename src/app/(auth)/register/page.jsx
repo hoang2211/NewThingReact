@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
-import { AuthLayout } from '@/components/AuthLayout'
-import { Button } from '@/components/Button'
-import { SelectField, TextField } from '@/components/Fields'
+import { AuthLayout } from '@/components/layout/AuthLayout'
+import { Button } from '@/components/common/Button'
+import { SelectField, TextField } from '@/components/common/Fields'
 
 export const metadata = {
   title: 'Sign Up',

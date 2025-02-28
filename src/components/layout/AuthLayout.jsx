@@ -1,14 +1,15 @@
 import Link from 'next/link'
 
-import { CirclesBackground } from '@/components/CirclesBackground'
-import { Logo } from '@/components/Logo'
+import { CirclesBackground } from '@/components/demo/CirclesBackground'
+import { Logo, Logomark } from '@/components/common/Logo'
 
 export function AuthLayout({ title, subtitle, children }) {
   return (
     <main className="flex min-h-full overflow-hidden pt-16 sm:py-28">
       <div className="mx-auto flex w-full max-w-2xl flex-col px-4 sm:px-6">
         <Link href="/" aria-label="Home">
-          <Logo className="mx-auto h-10 w-auto" />
+          {/* <Logo className="mx-auto h-10 w-auto" /> */}
+          <Logomark className="mx-auto h-10 w-10 fill-cyan-500" />
         </Link>
         <div className="relative mt-12 sm:mt-16">
           <CirclesBackground

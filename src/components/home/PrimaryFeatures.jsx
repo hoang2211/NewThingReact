@@ -6,10 +6,10 @@ import clsx from 'clsx'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useDebouncedCallback } from 'use-debounce'
 
-import { AppScreen } from '@/components/AppScreen'
-import { CircleBackground } from '@/components/CircleBackground'
-import { Container } from '@/components/Container'
-import { PhoneFrame } from '@/components/PhoneFrame'
+import { AppScreen } from '@/components/demo/AppScreen'
+import { CircleBackground } from '@/components/demo/CircleBackground'
+import { Container } from '@/components/common/Container'
+import { PhoneFrame } from '@/components/common/PhoneFrame'
 import {
   DiageoLogo,
   LaravelLogo,
@@ -19,7 +19,7 @@ import {
   StaticKitLogo,
   TransistorLogo,
   TupleLogo,
-} from '@/components/StockLogos'
+} from '@/components/common/StockLogos'
 
 const MotionAppScreenHeader = motion(AppScreen.Header)
 const MotionAppScreenBody = motion(AppScreen.Body)
@@ -28,7 +28,7 @@ const features = [
   {
     name: 'Invite friends for better returns',
     description:
-      'For every friend you invite to Pocket, you get insider notifications 5 seconds sooner. And it’s 10 seconds if you invite an insider.',
+      'For every friend you invite to Handee, you get insider notifications 5 seconds sooner. And it’s 10 seconds if you invite an insider.',
     icon: DeviceUserIcon,
     screen: InviteScreen,
   },
@@ -559,13 +559,14 @@ export function PrimaryFeatures() {
       <Container>
         <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-3xl">
           <h2 className="text-3xl font-medium tracking-tight text-white">
-            Every feature you need to win. Try it for yourself.
+            Why Choose Handee?
           </h2>
           <p className="mt-2 text-lg text-gray-400">
-            Pocket was built for investors like you who play by their own rules
-            and aren’t going to let SEC regulations get in the way of their
-            dreams. If other investing tools are afraid to build it, Pocket has
-            it.
+            At Handee, we believe that fashion and sustainability go hand in
+            hand. Our mission is to make secondhand shopping exciting,
+            affordable, and eco-friendly. Whether you are hunting for unique
+            vintage pieces or looking to give your old items a second life,
+            Handee is the perfect marketplace for you.
           </p>
         </div>
       </Container>

@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { Radio, RadioGroup } from '@headlessui/react'
 import clsx from 'clsx'
 
-import { Button } from '@/components/Button'
-import { Container } from '@/components/Container'
-import { Logomark } from '@/components/Logo'
+import { Button } from '@/components/common/Button'
+import { Container } from '@/components/common/Container'
+import { Logomark } from '@/components/common/Logo'
 
 const plans = [
   {

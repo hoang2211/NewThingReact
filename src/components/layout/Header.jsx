@@ -9,10 +9,10 @@ import {
 } from '@headlessui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-import { Button } from '@/components/Button'
-import { Container } from '@/components/Container'
-import { Logo } from '@/components/Logo'
-import { NavLinks } from '@/components/NavLinks'
+import { Button } from '@/components/common/Button'
+import { Container } from '@/components/common/Container'
+import { Logo } from '@/components/common/Logo'
+import { NavLinks } from '@/components/common/NavLinks'
 
 function MenuIcon(props) {
   return (

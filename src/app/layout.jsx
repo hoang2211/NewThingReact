@@ -2,6 +2,8 @@ import { Inter } from 'next/font/google'
 import clsx from 'clsx'
 
 import '@/styles/tailwind.css'
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -11,8 +13,8 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    template: '%s - Pocket',
-    default: 'Pocket - Invest at the perfect time.',
+    template: '%s - Handee',
+    default: 'Handee - Invest at the perfect time.',
   },
   description:
     'By leveraging insights from our network of industry insiders, you’ll know exactly when to buy to maximize profit, and exactly when to sell to avoid painful losses.',
@@ -21,7 +23,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={clsx('bg-gray-50 antialiased', inter.variable)}>
+      <Header />
       <body>{children}</body>
+      <Footer />
     </html>
   )
 }

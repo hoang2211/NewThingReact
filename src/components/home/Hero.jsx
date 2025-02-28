@@ -2,11 +2,11 @@ import { useId } from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
 
-import { AppDemo } from '@/components/AppDemo'
-import { AppStoreLink } from '@/components/AppStoreLink'
-import { Button } from '@/components/Button'
-import { Container } from '@/components/Container'
-import { PhoneFrame } from '@/components/PhoneFrame'
+import { AppDemo } from '@/components/demo/AppDemo'
+import { AppStoreLink } from '@/components/demo/AppStoreLink'
+import { Button } from '@/components/common/Button'
+import { Container } from '@/components/common/Container'
+import { PhoneFrame } from '@/components/common/PhoneFrame'
 import logoBbc from '@/images/logos/bbc.svg'
 import logoCbs from '@/images/logos/cbs.svg'
 import logoCnn from '@/images/logos/cnn.svg'
@@ -105,12 +105,13 @@ export function Hero() {
         <div className="lg:grid lg:grid-cols-12 lg:gap-x-8 lg:gap-y-20">
           <div className="relative z-10 mx-auto max-w-2xl lg:col-span-7 lg:max-w-none lg:pt-6 xl:col-span-6">
             <h1 className="text-4xl font-medium tracking-tight text-gray-900">
-              Invest at the perfect time.
+              Handee – Sustainable Fashion & Affordable Finds
             </h1>
             <p className="mt-6 text-lg text-gray-600">
-              By leveraging insights from our network of industry insiders,
-              you’ll know exactly when to buy to maximize profit, and exactly
-              when to sell to avoid painful losses.
+              Welcome to Handee, the ultimate destination for curated secondhand
+              treasures! From vintage fashion to pre-loved electronics, we help
+              you shop sustainably while saving big. Join our community of
+              thrifters today!
             </p>
             <div className="mt-8 flex flex-wrap gap-x-6 gap-y-4">
               <AppStoreLink />
