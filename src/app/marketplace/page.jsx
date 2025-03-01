@@ -92,7 +92,7 @@ const products = [
   {
     id: 1,
     name: 'Nomad Pouch',
-    href: '#',
+    href: '/marketplace/item-sample',
     price: '$50',
     availability: 'White and Black',
     imageSrc:
@@ -103,7 +103,7 @@ const products = [
   {
     id: 2,
     name: 'Zip Tote Basket',
-    href: '#',
+    href: '/marketplace/item-sample',
     price: '$140',
     availability: 'Washed Black',
     imageSrc:

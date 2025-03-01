@@ -36,7 +36,7 @@ export default function ShipperRegister() {
             autoComplete="name"
             required
           />
-          <TextField
+          {/* <TextField
             className="col-span-full"
             label="Email Address"
             name="email"
@@ -51,7 +51,7 @@ export default function ShipperRegister() {
             type="password"
             autoComplete="new-password"
             required
-          />
+          /> */}
           <TextField
             className="col-span-full"
             label="Business Address"
@@ -68,16 +68,7 @@ export default function ShipperRegister() {
             autoComplete="tel"
             required
           />
-          <SelectField
-            className="col-span-full"
-            label="Shipping Coverage Area"
-            name="shipping_coverage"
-            required
-          >
-            <option>Local</option>
-            <option>National</option>
-            <option>International</option>
-          </SelectField>
+
           <SelectField
             className="col-span-full"
             label="Vehicle Type"

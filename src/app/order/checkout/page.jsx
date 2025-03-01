@@ -1,10 +1,12 @@
+'use client'
+
 import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
 } from '@headlessui/react'
 import { LockClosedIcon } from '@heroicons/react/20/solid'
-
+import { useRouter } from 'next/navigation'
 const subtotal = '$210.00'
 const discount = { code: 'CHEAPSKATE', amount: '$24.00' }
 const taxes = '$23.68'
@@ -40,6 +42,7 @@ const products = [
 ]
 
 export default function Example() {
+  const router = useRouter()
   return (
     <>
       <main className="lg:flex lg:min-h-full lg:flex-row-reverse lg:overflow-hidden">
@@ -505,7 +508,8 @@ export default function Example() {
               </div>
 
               <button
-                type="submit"
+                type="button"
+                onClick={() => router.push('/order/summary')}
                 className="mt-6 w-full rounded-md border border-transparent bg-cyan-600 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Pay {total}

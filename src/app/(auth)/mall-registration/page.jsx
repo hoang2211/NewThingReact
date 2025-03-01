@@ -36,7 +36,7 @@ export default function SellerRegister() {
             autoComplete="name"
             required
           />
-          <TextField
+          {/* <TextField
             className="col-span-full"
             label="Email address"
             name="email"
@@ -51,7 +51,7 @@ export default function SellerRegister() {
             type="password"
             autoComplete="new-password"
             required
-          />
+          /> */}
           <TextField
             className="col-span-full"
             label="Store Address"

@@ -28,7 +28,7 @@ import {
   QuestionMarkCircleIcon,
   XMarkIcon as XMarkIconMini,
 } from '@heroicons/react/20/solid'
-
+import { useRouter } from 'next/navigation'
 const products = [
   {
     id: 1,
@@ -82,7 +82,7 @@ const relatedProducts = [
 ]
 
 export default function Example() {
-  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   return (
     <div className="bg-white">
@@ -263,7 +263,8 @@ export default function Example() {
 
             <div className="mt-6">
               <button
-                type="submit"
+                type="button"
+                onClick={() => router.push('/order/checkout')}
                 className="w-full rounded-md border border-transparent bg-cyan-600 px-4 py-3 text-base font-medium text-white shadow-xs hover:bg-cyan-700 focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden"
               >
                 Checkout
