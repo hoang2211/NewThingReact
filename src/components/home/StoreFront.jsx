@@ -154,7 +154,8 @@ export default function StoreFront() {
                     </h1>
                     <p className="mt-4 text-xl text-gray-600">
                       All the charts, datepickers, and notifications in the
-                      world can't beat checking off some items on a paper card.
+                      world can&apos;t beat checking off some items on a paper
+                      card.
                     </p>
                     <div className="mt-6">
                       <a
@@ -326,8 +327,8 @@ export default function StoreFront() {
                 Get 25% off during our one-time sale
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-xl text-gray-600">
-                Most of our products are limited releases that won't come back.
-                Get your favorite items while they're in stock.
+                Most of our products are limited releases that won&apos;t come
+                back. Get your favorite items while they&apos;re in stock.
               </p>
               <a
                 href="#"

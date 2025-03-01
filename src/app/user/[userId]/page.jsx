@@ -366,8 +366,8 @@ export default function Example() {
                   Notifications
                 </h3>
                 <p className="mt-1 text-sm text-gray-500">
-                  We'll always let you know about important changes, but you
-                  pick what else you want to hear about.
+                  We&apos;ll always let you know about important changes, but
+                  you pick what else you want to hear about.
                 </p>
               </div>
 
