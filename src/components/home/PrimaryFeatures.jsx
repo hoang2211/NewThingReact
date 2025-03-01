@@ -20,7 +20,7 @@ import {
   TransistorLogo,
   TupleLogo,
 } from '@/components/common/StockLogos'
-
+import home_sample from '@/images/sample/home_sample.png'
 const MotionAppScreenHeader = motion(AppScreen.Header)
 const MotionAppScreenBody = motion(AppScreen.Body)
 

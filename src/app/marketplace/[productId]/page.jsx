@@ -588,7 +588,7 @@ export default function Example() {
                 >
                   <img
                     alt=""
-                    src="https://tailwindui.com/plus-assets/img/flags/flag-canada.svg"
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1599px-Flag_of_Vietnam.svg.png"
                     className="block h-auto w-5 shrink-0"
                   />
                   <span className="ml-3 block text-sm font-medium">CAD</span>

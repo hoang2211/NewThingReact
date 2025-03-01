@@ -1,12 +1,16 @@
 import { Footer } from '@/components/layout/Footer'
 import { Header } from '@/components/layout/Header'
+import AlFooter from './AlFooter'
+import ActionBar from '../common/ActionBar'
 
-export function Layout({ children }) {
+export function UserLayout({ children }) {
   return (
     <>
-      {/* <Header /> */}
+      <Header />
+      <ActionBar />
       <main className="flex-auto">{children}</main>
       {/* <Footer /> */}
+      <AlFooter />
     </>
   )
 }
