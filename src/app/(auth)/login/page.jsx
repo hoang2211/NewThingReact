@@ -1,14 +1,71 @@
+"use client"
+
 import Link from 'next/link'
 
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/common/Button'
 import { TextField } from '@/components/common/Fields'
+import { LoginUser } from '@/services/userService'
+import { redirect } from 'next/navigation';
+import { useState } from 'react'
 
-export const metadata = {
-  title: 'Sign In',
-}
 
 export default function Login() {
+  // const handleLogin = async (email, password) => {
+  //   await LoginUser(email, password)
+  // }
+  const [error, setError] = useState(""); // State to store error message
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    setError(""); // Clear previous errors
+
+    const formData = new FormData(event.target);
+    const userData = Object.fromEntries(formData.entries());
+  
+    console.log(userData);
+  
+    try {
+      const response = await fetch('http://localhost:5223/api/Auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+  
+      const textData = await response.text(); // Read response as text first
+  
+      if (!response.ok) {
+        try {
+          const errorData = JSON.parse(textData); // Try parsing JSON error
+          setError(errorData.message || "Invalid email or password.");
+        } catch {
+          setError("Invalid email or password."); // Default error message
+        }
+        return;
+      }
+  
+      // Try parsing JSON only if the response contains valid JSON
+      let data;
+      try {
+        data = JSON.parse(textData);
+      } catch (err) {
+        console.warn("Response is not JSON:", textData);
+        return;
+      }
+  
+      console.log("Login successful:", data);
+      // Redirect or handle successful login
+      window.location.href = '/'; // Example redirect
+  
+    } catch (error) {
+      console.error("An unexpected error occurred:", error);
+      setError("An unexpected error occurred. Please try again later.");
+    }
+  }
+  
+  
   return (
     <AuthLayout
       title="Sign in to account"
@@ -22,7 +79,9 @@ export default function Login() {
         </>
       }
     >
-      <form>
+       <form onSubmit={handleLogin} method="post">
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>} {/* Show error message */}
+
         <div className="space-y-6">
           <TextField
             label="Email address"

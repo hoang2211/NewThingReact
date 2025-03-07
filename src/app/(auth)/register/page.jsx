@@ -1,74 +1,77 @@
-import Link from 'next/link'
+"use client";
 
-import { AuthLayout } from '@/components/layout/AuthLayout'
-import { Button } from '@/components/common/Button'
-import { SelectField, TextField } from '@/components/common/Fields'
-
-export const metadata = {
-  title: 'Sign Up',
-}
+import { useState } from "react";
+import Link from "next/link";
+import { AuthLayout } from "@/components/layout/AuthLayout";
+import { Button } from "@/components/common/Button";
+import { TextField } from "@/components/common/Fields";
+import { redirect } from "next/navigation";
 
 export default function Register() {
+  const [error, setError] = useState("");
+
+  async function handleRegister(event) {
+    event.preventDefault();
+    setError("");
+
+    const formData = new FormData(event.target);
+    const userData = Object.fromEntries(formData.entries());
+
+    if (userData.password !== userData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5223/api/Auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Registration failed.");
+        return;
+      }
+
+      redirect("/login");
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+      setError("An unexpected error occurred. Please try again later.");
+    }
+  }
+
   return (
     <AuthLayout
       title="Sign up for an account"
       subtitle={
         <>
-          Already registered?{' '}
+          Already registered? {" "}
           <Link href="/login" className="text-cyan-600">
             Sign in
-          </Link>{' '}
+          </Link>{" "}
           to your account.
         </>
       }
     >
-      <form>
+      <form onSubmit={handleRegister} method="post">
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
         <div className="grid grid-cols-2 gap-6">
-          <TextField
-            label="First name"
-            name="first_name"
-            type="text"
-            autoComplete="given-name"
-            required
-          />
-          <TextField
-            label="Last name"
-            name="last_name"
-            type="text"
-            autoComplete="family-name"
-            required
-          />
-          <TextField
-            className="col-span-full"
-            label="Email address"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-          />
-          <TextField
-            className="col-span-full"
-            label="Password"
-            name="password"
-            type="password"
-            autoComplete="new-password"
-            required
-          />
-          <SelectField
-            className="col-span-full"
-            label="How did you hear about us?"
-            name="referral_source"
-          >
-            <option>AltaVista search</option>
-            <option>Super Bowl commercial</option>
-            <option>Our route 34 city bus ad</option>
-            <option>The “Never Use This” podcast</option>
-          </SelectField>
+          <TextField label="Full name" name="fullName" type="text" required />
+          <TextField label="Phone" name="phone" type="text" required />
+          <TextField className="col-span-full" label="Email address" name="email" type="email" required />
+          <TextField className="col-span-full" label="Username" name="username" required />
+          <TextField className="col-span-full" label="Password" name="password" type="password" required />
+          <TextField className="col-span-full" label="Re-enter Password" name="confirmPassword" type="password" required />
         </div>
         <Button type="submit" color="cyan" className="mt-8 w-full">
           Get started today
         </Button>
       </form>
     </AuthLayout>
-  )
+  );
 }

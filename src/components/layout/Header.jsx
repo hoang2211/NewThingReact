@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import {
   Popover,
   PopoverButton,
@@ -51,6 +52,36 @@ function MobileNavLink(props) {
 }
 
 export function Header() {
+  const [user, setUser] = useState(null)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken')
+    if (token) {
+      // Fetch user data if logged in
+      const userId = localStorage.getItem('userId') // Assuming you store the user ID
+      fetch(`/api/User/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
+        .then(response => response.json())
+        .then(data => {
+          setUser(data)
+          setIsLoggedIn(true)
+        })
+        .catch(error => console.error('Error fetching user data:', error))
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('userId')
+    setUser(null)
+    setIsLoggedIn(false)
+    window.location.href = '/login'
+  }
+
   return (
     <header>
       <nav>
@@ -115,9 +146,15 @@ export function Header() {
                             <MobileNavLink href="/#faqs">FAQs</MobileNavLink>
                           </div>
                           <div className="mt-8 flex flex-col gap-4">
-                            <Button href="/login" variant="outline">
-                              Log in
-                            </Button>
+                            {isLoggedIn ? (
+                              <Button onClick={handleLogout} variant="outline">
+                                Log out
+                              </Button>
+                            ) : (
+                              <Button href="/login" variant="outline">
+                                Log in
+                              </Button>
+                            )}
                             <Button href="#">Download the app</Button>
                           </div>
                         </PopoverPanel>
@@ -128,10 +165,21 @@ export function Header() {
               )}
             </Popover>
             <div className="flex items-center gap-6 max-lg:hidden">
-              <Button href="/login" variant="outline">
-                Log in
-              </Button>
-              <Button href="/register">Sign up</Button>
+              {isLoggedIn ? (
+                <>
+                  <span>Welcome, {user?.username}</span>
+                  <Button onClick={handleLogout} variant="outline">
+                    Log out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button href="/login" variant="outline">
+                    Log in
+                  </Button>
+                  <Button href="/register">Sign up</Button>
+                </>
+              )}
             </div>
           </div>
         </Container>

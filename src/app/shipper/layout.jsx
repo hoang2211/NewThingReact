@@ -21,14 +21,6 @@ import Link from 'next/link'
 import { Logo } from '@/components/common/Logo'
 const navigation = [
   {
-    name: 'Dashboard',
-    href: '/shipper/dashboard',
-    icon: HomeIcon,
-    current: true,
-  },
-  // { name: 'Projects', href: '#', icon: FolderIcon, current: false },
-  // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  {
     name: 'Order',
     href: '/shipper/order-management',
     icon: DocumentDuplicateIcon,

@@ -22,7 +22,6 @@ import { Logomark } from '@/components/common/Logo'
 import Link from 'next/link'
 import { Logo } from '@/components/common/Logo'
 const navigation = [
-  { name: 'Dashboard', href: '#', icon: HomeIcon, current: true },
   {
     name: 'User Management',
     href: '/admin/user-management',
@@ -35,14 +34,6 @@ const navigation = [
     icon: FolderIcon,
     current: false,
   },
-  // { name: 'Calendar', href: '#', icon: CalendarIcon, current: false },
-  {
-    name: 'Notification',
-    href: '/admin/notification',
-    icon: BellAlertIcon,
-    current: false,
-  },
-  { name: 'Reports', href: '#', icon: ChartPieIcon, current: false },
 ]
 
 function classNames(...classes) {
@@ -104,7 +95,7 @@ export default function AdminLayout({ children }) {
                               className={classNames(
                                 item.current
                                   ? 'bg-gray-800 text-white'
-                                  : 'text-gray-400 hover:bg-gray-800 hover:text-white',
+                                  : 'text-gray-400 hover:bg-gray-800 hover:text-red-600',
                                 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold',
                               )}
                             >
@@ -128,7 +119,7 @@ export default function AdminLayout({ children }) {
         {/* Static sidebar for desktop */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-amber-100 px-6">
             <div className="flex h-16 shrink-0 items-center">
               {/* Logo */}
               <Link href="/" aria-label="Home">

@@ -11,7 +11,6 @@ export function NavLinks() {
   return [
     ['Features', '/#features'],
 
-    ['Pricing', '/#pricing'],
     ['FAQs', '/#faqs'],
     ['Marketplace', '/marketplace'],
     ['Seller', '/mall-registration'],
