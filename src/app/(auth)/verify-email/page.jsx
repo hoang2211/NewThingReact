@@ -25,7 +25,7 @@ export default function VerifyEmail() {
 
                 if (response.ok) {
                     setStatus('Email has been successfully verified!');
-                    setTimeout(() => router.push('/'), 10000);
+                
                 } else {
                     setStatus('Verification failed. The token may be invalid or expired.');
                 }

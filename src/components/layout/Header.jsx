@@ -1,86 +1,59 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import {
-  Popover,
-  PopoverButton,
-  PopoverBackdrop,
-  PopoverPanel,
-} from '@headlessui/react'
-import { AnimatePresence, motion } from 'framer-motion'
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Popover, PopoverButton, PopoverBackdrop, PopoverPanel } from '@headlessui/react';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import { Button } from '@/components/common/Button'
-import { Container } from '@/components/common/Container'
-import { Logo } from '@/components/common/Logo'
-import { NavLinks } from '@/components/common/NavLinks'
-
-function MenuIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path
-        d="M5 6h14M5 18h14M5 12h14"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function ChevronUpIcon(props) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path
-        d="M17 14l-5-5-5 5"
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function MobileNavLink(props) {
-  return (
-    <PopoverButton
-      as={Link}
-      className="block text-base/7 tracking-tight text-gray-700"
-      {...props}
-    />
-  )
-}
+import { Button } from '@/components/common/Button';
+import { Container } from '@/components/common/Container';
+import { Logo } from '@/components/common/Logo';
+import { NavLinks } from '@/components/common/NavLinks';
 
 export function Header() {
-  const [user, setUser] = useState(null)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Check authentication when the component mounts
   useEffect(() => {
-    const token = localStorage.getItem('authToken')
-    if (token) {
-      // Fetch user data if logged in
-      const userId = localStorage.getItem('userId') // Assuming you store the user ID
-      fetch(`/api/User/${userId}`, {
+    const token = localStorage.getItem('authToken');
+    const userId = localStorage.getItem('userId');
+
+    if (token && userId) {
+      fetch(`http://localhost:5223/api/User/${userId}`, { // Fixed API URL
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
+          "Accept": "application/json",
         },
       })
-        .then(response => response.json())
-        .then(data => {
-          setUser(data)
-          setIsLoggedIn(true)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch user");
+          }
+          return response.json();
         })
-        .catch(error => console.error('Error fetching user data:', error))
+        .then((data) => {
+          if (data && !data.error) {
+            setUser(data);
+            setIsLoggedIn(true);
+          } else {
+            handleLogout();
+          }
+        })
+        .catch(() => handleLogout());
+        console.log(token);
+        console.log(userId);
     }
-  }, [])
+  }, []);
 
+  // Logout function
   const handleLogout = () => {
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('userId')
-    setUser(null)
-    setIsLoggedIn(false)
-    window.location.href = '/login'
-  }
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
+    setUser(null);
+    setIsLoggedIn(false);
+    window.location.href = '/login'; // Redirect to login page after logout
+  };
 
   return (
     <header>
@@ -99,66 +72,43 @@ export function Header() {
               {({ open }) => (
                 <>
                   <PopoverButton
-                    className="relative z-10 -m-2 inline-flex items-center rounded-lg stroke-gray-900 p-2 hover:bg-gray-200/50 hover:stroke-gray-600 focus:not-data-focus:outline-hidden active:stroke-gray-900"
+                    className="relative z-10 -m-2 inline-flex items-center rounded-lg stroke-gray-900 p-2 hover:bg-gray-200/50 hover:stroke-gray-600"
                     aria-label="Toggle site navigation"
                   >
-                    {({ open }) =>
-                      open ? (
-                        <ChevronUpIcon className="h-6 w-6" />
-                      ) : (
-                        <MenuIcon className="h-6 w-6" />
-                      )
-                    }
+                    {open ? (
+                      <svg viewBox="0 0 24 24" className="h-6 w-6">
+                        <path d="M17 14l-5-5-5 5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" className="h-6 w-6">
+                        <path d="M5 6h14M5 18h14M5 12h14" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
                   </PopoverButton>
-                  <AnimatePresence initial={false}>
+                  <AnimatePresence>
                     {open && (
-                      <>
-                        <PopoverBackdrop
-                          static
-                          as={motion.div}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          className="fixed inset-0 z-0 bg-gray-300/60 backdrop-blur-sm"
-                        />
-                        <PopoverPanel
-                          static
-                          as={motion.div}
-                          initial={{ opacity: 0, y: -32 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{
-                            opacity: 0,
-                            y: -32,
-                            transition: { duration: 0.2 },
-                          }}
-                          className="absolute inset-x-0 top-0 z-0 origin-top rounded-b-2xl bg-gray-50 px-6 pt-32 pb-6 shadow-2xl shadow-gray-900/20"
-                        >
-                          <div className="space-y-4">
-                            <MobileNavLink href="/#features">
-                              Features
-                            </MobileNavLink>
-                            <MobileNavLink href="/#reviews">
-                              Reviews
-                            </MobileNavLink>
-                            <MobileNavLink href="/#pricing">
-                              Pricing
-                            </MobileNavLink>
-                            <MobileNavLink href="/#faqs">FAQs</MobileNavLink>
-                          </div>
-                          <div className="mt-8 flex flex-col gap-4">
-                            {isLoggedIn ? (
-                              <Button onClick={handleLogout} variant="outline">
-                                Log out
-                              </Button>
-                            ) : (
+                      <PopoverPanel className="absolute inset-x-0 top-0 z-0 origin-top rounded-b-2xl bg-gray-50 px-6 pt-32 pb-6 shadow-2xl">
+                        <div className="space-y-4">
+                          <Link href="/#features">Features</Link>
+                          <Link href="/#reviews">Reviews</Link>
+                          <Link href="/#pricing">Pricing</Link>
+                          <Link href="/#faqs">FAQs</Link>
+                        </div>
+                        <div className="mt-8 flex flex-col gap-4">
+                          {isLoggedIn ? (
+                            <Button onClick={handleLogout} variant="outline">
+                              Log out
+                            </Button>
+                          ) : (
+                            <>
                               <Button href="/login" variant="outline">
                                 Log in
                               </Button>
-                            )}
-                            <Button href="#">Download the app</Button>
-                          </div>
-                        </PopoverPanel>
-                      </>
+                              <Button href="/register">Sign up</Button>
+                            </>
+                          )}
+                        </div>
+                      </PopoverPanel>
                     )}
                   </AnimatePresence>
                 </>
@@ -185,5 +135,5 @@ export function Header() {
         </Container>
       </nav>
     </header>
-  )
+  );
 }

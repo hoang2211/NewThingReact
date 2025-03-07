@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import AlFooter from '@/components/layout/AlFooter'
 import ActionBar from '@/components/common/ActionBar'
+import { AuthProvider } from '@/context/AuthContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,9 +26,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={clsx('bg-gray-50 antialiased', inter.variable)}>
-      {/* <Header />
-      <ActionBar /> */}
-      <body>{children}</body>
+      {/* <Header /> */}
+      {/*<ActionBar /> */}
+      <body>
+        {/* <AuthProvider> */}
+          {children}
+        {/* </AuthProvider> */}
+      </body>
       {/* <Footer /> */}
       {/* <AlFooter /> */}
     </html>
