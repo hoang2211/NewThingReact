@@ -1,54 +1,49 @@
-// "use client";
+"use client";
+import { createContext, useContext, useEffect, useState } from "react";
 
-// import { createContext, useContext, useEffect, useState } from "react";
+const AuthContext = createContext();
 
-// const AuthContext = createContext();
+export function AuthProvider({ children }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userID, setUserID] = useState("");
+  const [token, setToken] = useState("");
+  const [role, setRole] = useState("");
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      setIsLoggedIn(true);
+      setToken("Bearer " + token);
+    }
+  }, []);
+  useEffect(() => {
+    const userID = localStorage.getItem("userID");
+    if (userID) {
+      setUserID(userID);
+      console.log("userID:", userID);
+    }
+  }, []);
+  const login = (token) => {
+    localStorage.getItem("accessToken", token, {
+      expires: 1, // Set expiration in days
+      secure: true,
+      sameSite: "Strict",
+    });
+    setIsLoggedIn(true);
+  };
+  
 
-// export function AuthProvider({ children }) {
-//   const [user, setUser] = useState(null);
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    setIsLoggedIn(false);
+  };
 
-//   // Check user authentication on mount
-//   useEffect(() => {
-//     const token = localStorage.getItem("authToken");
-//     const userId = localStorage.getItem("userId");
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, login, logout , userID, token }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 
-//     if (token && userId) {
-//       fetch(`/api/User/${userId}`, {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       })
-//         .then((response) => response.json())
-//         .then((data) => {
-//           if (data && !data.error) {
-//             setUser(data);
-//             setIsLoggedIn(true);
-//           } else {
-//             handleLogout();
-//           }
-//         })
-//         .catch(() => handleLogout());
-//     }
-//   }, []);
-
-//   // Logout function
-//   const handleLogout = () => {
-//     localStorage.removeItem("authToken");
-//     localStorage.removeItem("userId");
-//     setUser(null);
-//     setIsLoggedIn(false);
-//     // Redirect to login page (or any other page)
-//     window.location.href = "/login";
-//   };
-
-//   return (
-//     <AuthContext.Provider value={{ user, isLoggedIn, handleLogout }}>
-//       {children}
-//     </AuthContext.Provider>
-//   );
-// }
-
-// export function useAuth() {
-//   return useContext(AuthContext);
-// }
+export function useAuth() {
+  return useContext(AuthContext);
+}

@@ -1,5 +1,5 @@
 'use client'
-
+'use strict'
 import { useState } from 'react'
 import {
   Dialog,

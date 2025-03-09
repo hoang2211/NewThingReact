@@ -8,22 +8,20 @@ import { TextField } from '@/components/common/Fields'
 import { LoginUser } from '@/services/userService'
 import { redirect } from 'next/navigation';
 import { useState } from 'react'
+import { useRouter } from 'next/navigation';
+
 
 
 export default function Login() {
-  // const handleLogin = async (email, password) => {
-  //   await LoginUser(email, password)
-  // }
+
   const [error, setError] = useState(""); // State to store error message
 
   async function handleLogin(event) {
     event.preventDefault();
     setError(""); // Clear previous errors
-
+  
     const formData = new FormData(event.target);
     const userData = Object.fromEntries(formData.entries());
-  
-    console.log(userData);
   
     try {
       const response = await fetch('http://localhost:5223/api/Auth/login', {
@@ -33,37 +31,29 @@ export default function Login() {
         },
         body: JSON.stringify(userData),
       });
-  
-      const textData = await response.text(); // Read response as text first
-  
+      console.log(response);
+      const data = await response.json();
       if (!response.ok) {
-        try {
-          const errorData = JSON.parse(textData); // Try parsing JSON error
-          setError(errorData.message || "Invalid email or password.");
-        } catch {
-          setError("Invalid email or password."); // Default error message
-        }
+        setError(data.message || "Invalid email or password.");
         return;
       }
   
-      // Try parsing JSON only if the response contains valid JSON
-      let data;
-      try {
-        data = JSON.parse(textData);
-      } catch (err) {
-        console.warn("Response is not JSON:", textData);
-        return;
+      localStorage.setItem("accessToken", data.token); // Store refresh token in localStorage
+      localStorage.setItem("userID", JSON.stringify(data.id)); 
+      localStorage.setItem("emailVerify", JSON.stringify(data.emailVerified));
+      localStorage.setItem("role", JSON.stringify(data.role));
+      // console.log("local storage:", localStorage);
+      // console.log("Login successful:", data);
+      window.location.href = '/'; // Redirect after login
+      if(data.emailVerified == false){
+        console.error("Email not verified");
       }
-  
-      console.log("Login successful:", data);
-      // Redirect or handle successful login
-      window.location.href = '/'; // Example redirect
-  
     } catch (error) {
       console.error("An unexpected error occurred:", error);
       setError("An unexpected error occurred. Please try again later.");
     }
   }
+  
   
   
   return (

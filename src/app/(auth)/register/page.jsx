@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // ✅ Use client-side navigation
 import { AuthLayout } from "@/components/layout/AuthLayout";
 import { Button } from "@/components/common/Button";
 import { TextField } from "@/components/common/Fields";
-import { redirect } from "next/navigation";
 
 export default function Register() {
   const [error, setError] = useState("");
+  const router = useRouter(); // ✅ Initialize useRouter
 
   async function handleRegister(event) {
     event.preventDefault();
@@ -31,13 +32,22 @@ export default function Register() {
         body: JSON.stringify(userData),
       });
 
+      // ✅ Check if response is valid JSON before parsing
+      const text = await response.text();
+      let responseData;
+      try {
+        responseData = text ? JSON.parse(text) : {};
+      } catch {
+        responseData = { message: "Invalid response from server." };
+      }
+
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || "Registration failed.");
+        setError(responseData.message || "Registration failed.");
         return;
       }
 
-      redirect("/login");
+      // ✅ Redirect after successful registration
+      router.push("/login"); // Use router.push instead of redirect()
     } catch (error) {
       console.error("An unexpected error happened:", error);
       setError("An unexpected error occurred. Please try again later.");
@@ -49,7 +59,7 @@ export default function Register() {
       title="Sign up for an account"
       subtitle={
         <>
-          Already registered? {" "}
+          Already registered?{" "}
           <Link href="/login" className="text-cyan-600">
             Sign in
           </Link>{" "}

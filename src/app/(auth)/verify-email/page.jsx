@@ -54,8 +54,8 @@ export default function VerifyEmail() {
             <div className="space-y-6">
                 <h1>{status}</h1>
             </div>
-            <Button onClick={() => router.push('/')} color="cyan" className="mt-8 w-full">
-                Return to Home Page
+            <Button onClick={() => router.push('/login')} color="cyan" className="mt-8 w-full">
+                Return to Login Page
             </Button>
         </AuthLayout>
     );

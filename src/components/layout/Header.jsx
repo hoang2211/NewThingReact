@@ -1,58 +1,25 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { Popover, PopoverButton, PopoverBackdrop, PopoverPanel } from '@headlessui/react';
-import { AnimatePresence, motion } from 'framer-motion';
-
-import { Button } from '@/components/common/Button';
-import { Container } from '@/components/common/Container';
-import { Logo } from '@/components/common/Logo';
-import { NavLinks } from '@/components/common/NavLinks';
+import Link from "next/link";
+import { useState } from "react";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import { AnimatePresence } from "framer-motion";
+import { Button } from "@/components/common/Button";
+import { Container } from "@/components/common/Container";
+import { Logo } from "@/components/common/Logo";
+import { NavLinks } from "@/components/common/NavLinks";
+import { useAuth } from "@/context/AuthContext";
 
 export function Header() {
-  const [user, setUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, login, logout } = useAuth();
+  const [loading, setLoading] = useState(false);
 
-  // Check authentication when the component mounts
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const userId = localStorage.getItem('userId');
-
-    if (token && userId) {
-      fetch(`http://localhost:5223/api/User/${userId}`, { // Fixed API URL
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Accept": "application/json",
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to fetch user");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data && !data.error) {
-            setUser(data);
-            setIsLoggedIn(true);
-          } else {
-            handleLogout();
-          }
-        })
-        .catch(() => handleLogout());
-        console.log(token);
-        console.log(userId);
-    }
-  }, []);
-
-  // Logout function
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userId');
-    setUser(null);
-    setIsLoggedIn(false);
-    window.location.href = '/login'; // Redirect to login page after logout
+    setLoading(true);
+    setTimeout(() => {
+      logout();
+      setLoading(false);
+    }, 300); // Smooth transition delay
   };
 
   return (
@@ -96,8 +63,8 @@ export function Header() {
                         </div>
                         <div className="mt-8 flex flex-col gap-4">
                           {isLoggedIn ? (
-                            <Button onClick={handleLogout} variant="outline">
-                              Log out
+                            <Button onClick={handleLogout} variant="outline" disabled={loading}>
+                              {loading ? "Logging out..." : "Log out"}
                             </Button>
                           ) : (
                             <>
@@ -116,12 +83,9 @@ export function Header() {
             </Popover>
             <div className="flex items-center gap-6 max-lg:hidden">
               {isLoggedIn ? (
-                <>
-                  <span>Welcome, {user?.username}</span>
-                  <Button onClick={handleLogout} variant="outline">
-                    Log out
-                  </Button>
-                </>
+                <Button onClick={handleLogout} variant="outline" disabled={loading}>
+                  {loading ? "Logging out..." : "Log out"}
+                </Button>
               ) : (
                 <>
                   <Button href="/login" variant="outline">

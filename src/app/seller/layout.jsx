@@ -52,7 +52,7 @@ function classNames(...classes) {
 
 export default function Example({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
+  
   return (
     <>
       <div>

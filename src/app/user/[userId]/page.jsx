@@ -1,188 +1,196 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
+import {
+  PhotoIcon,
+  UserCircleIcon as UserCircleIconSolid,
+} from '@heroicons/react/24/solid'
+import { ChevronDownIcon } from '@heroicons/react/16/solid'
 
 export default function UserProfile() {
-  const userId = 12; // Replace with dynamic ID if needed
+  // State to store user data
   const [user, setUser] = useState({
-    username: '',
-    fullName: '',
-    phone: '',
-    email: '',
-    country: '',
-    street: '',
-    city: '',
-    region: '',
-    postalCode: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    birthday: "",
+    address: ""
   });
 
+  // State to store error message
+  const [error, setError] = useState("");
+
+  //State to check if user is editing profile
   const [isEditing, setIsEditing] = useState(false);
 
-  // Fetch user data
+  //set user id and token for fetching user data     
+  
+  const userId = localStorage.getItem("userID");
+  const token = localStorage.getItem("accessToken");
+
+  // Function to split full name into first and last name parts to display in form
+  const splitName = (fullName) => {
+    if (!fullName) return { firstName: "", lastName: "" };
+    const nameParts = fullName.trim().split(" ");
+    return {
+      firstName: nameParts[0],
+      lastName: nameParts.slice(1).join(" "),
+    };
+  };
+
+  //Function to censor email 
+  const censorEmail = (email) => {
+    if (!email) return "";
+    const [name, domain] = email.split("@");
+    return name.slice(0, 3) + "***********@" + domain;
+  };
+
+  //Function to censor phone number
+  const censorPhone = (phone) => {
+    if (!phone || phone.length < 6) return phone;
+    return phone.slice(0, 2) + "***********" + phone.slice(-4);
+  };
+
+
+  //Fetch user data from API using header token authenticate and set user data
   useEffect(() => {
     async function fetchUserProfile() {
+      if (!userId || !token) {
+        console.error("UserID or token is missing!");
+        return;
+      }
+
       try {
-        const response = await fetch(`localhost:5223/api/User/${userId}`);
-        if (!response.ok) throw new Error('Failed to fetch user');
+        const response = await fetch(`http://localhost:5223/api/User/${userId}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch user");
+
         const data = await response.json();
-        setUser(data);
+        const { firstName, lastName } = splitName(data.fullName);
+        setUser({ ...data, firstName, lastName });
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error fetching user:", error);
       }
     }
-    fetchUserProfile();
-  }, []);
+    if (userId) {
+      fetchUserProfile();
+    }
+  }, [userId, token]);
 
-  // Handle input change
+  // // Function to handle form input changes
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  // Toggle edit mode
-  const toggleEdit = () => {
-    setIsEditing(!isEditing);
-  };
-
-  // Handle form submission
+  // Function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    if (new Date(user.birthday) > new Date()) {
+      setError("Birthday cannot be in the future.");
+      return;
+    }
+
+    if (!userId || !token) {
+      console.error("UserID or token is missing!");
+      return;
+    }
+
     try {
-      const response = await fetch('localhost:5223/api/User/update-profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(`http://localhost:5223/api/User/update-profile`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(user),
       });
 
-      if (!response.ok) throw new Error('Update failed');
+      if (!response.ok) throw new Error("Failed to update user");
 
-      alert('Profile updated successfully!');
+      alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
-      console.error('Error updating profile:', error);
+      console.error("Error updating user:", error);
     }
   };
 
+
   return (
     <div className="space-y-6 px-6">
-      {/* Edit Button */}
-      <button
-        type="button"
-        onClick={toggleEdit}
-        className="mb-4 bg-blue-600 px-3 py-2 text-white rounded-md hover:bg-blue-500"
-      >
-        {isEditing ? 'Cancel' : 'Edit Profile'}
-      </button>
 
-      {/* User Form */}
+
+      {/* Profile Information */}
       <form onSubmit={handleSubmit}>
-        <div className="bg-white shadow-sm rounded-md p-6 space-y-6">
-          <h3 className="text-lg font-semibold">Personal Information</h3>
-
-          <div className="grid grid-cols-2 gap-6">
-            {/* Username */}
-            <div>
-              <label className="block text-sm font-medium">Username</label>
-              <input
-                name="username"
-                value={user.username}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              />
+        <div className="shadow-sm sm:overflow-hidden sm:rounded-md">
+          <div className="space-y-6 bg-white px-4 py-6 sm:p-6">
+            <h3 className="text-base font-semibold text-gray-900">Profile</h3>
+            <p className="mt-1 text-sm text-gray-500">This information will be displayed publicly so be careful what you share.</p>
+            <input type="hidden" name="dayInWeek" value={user.dayInWeek || ""} />
+            <div className="flex justify-end space-x-2">
+              <button type="button" onClick={() => setIsEditing(!isEditing)} className={`rounded-md px-3 py-2 font-semibold ${isEditing ? "bg-gray-300 text-gray-600" : "bg-blue-500 text-white"}`}>
+                {isEditing ? "Cancel" : "Edit"}
+              </button>
+              <button type="submit" disabled={!isEditing} className={`rounded-md px-3 py-2 font-semibold ${isEditing ? "bg-blue-500 text-white" : "bg-gray-300 text-gray-600"}`}>
+                Save
+              </button>
             </div>
 
-            {/* Full Name */}
-            <div>
-              <label className="block text-sm font-medium">Full Name</label>
-              <input
-                name="fullName"
-                value={user.fullName}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              />
+            <div className="grid grid-cols-3 gap-6">
+              <div className="col-span-3 sm:col-span-2">
+                <label className="block text-sm font-medium text-gray-500">Username</label>
+                <div className="mt-2">
+                  <input name="username" type="text" value={user.username} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
+                </div>
+              </div>
+              <div className="col-span-3">
+                <label className="block text-sm font-medium text-gray-500">Photo</label>
+                <div className="mt-2 flex items-center gap-x-3">
+                  <UserCircleIconSolid className="size-12 text-gray-300" />
+                  <button type="button" className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50">
+                    Change
+                  </button>
+                </div>
+              </div>
             </div>
 
-            {/* Phone */}
-            <div>
-              <label className="block text-sm font-medium">Phone</label>
-              <input
-                name="phone"
-                value={user.phone}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium">Email</label>
-              <input
-                name="email"
-                value={user.email}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              />
-            </div>
-
-            {/* Country */}
-            <div>
-              <label className="block text-sm font-medium">Country</label>
-              <select
-                name="country"
-                value={user.country}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              >
-                <option>United States</option>
-                <option>Canada</option>
-                <option>Mexico</option>
-              </select>
-            </div>
-
-            {/* Address */}
-            <div>
-              <label className="block text-sm font-medium">Street</label>
-              <input
-                name="street"
-                value={user.street}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium">City</label>
-              <input
-                name="city"
-                value={user.city}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium">Postal Code</label>
-              <input
-                name="postalCode"
-                value={user.postalCode}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full p-2 border rounded-md bg-gray-100"
-              />
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-500">First name</label>
+                <input name="firstName" type="text" value={user.firstName} readOnly className="input-field w-full" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Last name</label>
+                <input name="lastName" type="text" value={user.lastName} readOnly className="input-field w-full" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Email address</label>
+                <input name="email" type="email" value={censorEmail(user.email)} readOnly className="input-field w-full" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Phone</label>
+                <input name="phone" type="text" value={censorPhone(user.phone)} readOnly className="input-field w-full" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Birthday</label>
+                <input name="birthday" type="date" value={user.birthday} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-500">Address</label>
+                <input name="address" type="text" value={user.address} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
+              </div>
             </div>
           </div>
-
-          {/* Save Button */}
-          {isEditing && (
-            <button type="submit" className="bg-cyan-600 px-3 py-2 text-white rounded-md hover:bg-cyan-500">
-              Save
-            </button>
-          )}
         </div>
       </form>
     </div>

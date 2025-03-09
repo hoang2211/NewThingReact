@@ -29,9 +29,9 @@ export default function RootLayout({ children }) {
       {/* <Header /> */}
       {/*<ActionBar /> */}
       <body>
-        {/* <AuthProvider> */}
+        <AuthProvider>
           {children}
-        {/* </AuthProvider> */}
+        </AuthProvider>
       </body>
       {/* <Footer /> */}
       {/* <AlFooter /> */}
