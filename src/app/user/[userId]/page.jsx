@@ -94,43 +94,65 @@ export default function UserProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     if (new Date(user.birthday) > new Date()) {
       setError("Birthday cannot be in the future.");
       return;
     }
-
+  
     if (!userId || !token) {
       console.error("UserID or token is missing!");
       return;
     }
-
+  
+    // ✅ Ensure `fullName` is set properly
+    const updatedUser = {
+      userId: userId,  // Ensure userId is included
+      fullName: `${user.firstName} ${user.lastName}`.trim(),
+      email: user.email,
+      gender: user.gender,
+      phone: user.phone,
+      address: user.address,
+      birthday: user.birthday ? user.birthday : null, // ✅ Ensure birthday is valid or null
+      imgProfile: user.imgProfile,
+    };
+    
     try {
       const response = await fetch(`http://localhost:5223/api/User/update-profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
-        body: JSON.stringify(user),
+        credentials: "include",
+        body: JSON.stringify({ command: updatedUser }), // ✅ Wrap inside `command`
       });
-
-      if (!response.ok) throw new Error("Failed to update user");
-
+  
+      const responseText = await response.text();
+      console.log("Response Status:", response.status);
+      console.log("Response Body:", responseText);
+      console.log("Response Headers:", response.headers);
+      console.log("Response :", response);
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update user: ${response.status} - ${responseText}`);
+      }
+  
       alert("Profile updated successfully!");
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating user:", error);
     }
   };
-
+     
 
   return (
     <div className="space-y-6 px-6">
 
 
       {/* Profile Information */}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} method="put">
         <div className="shadow-sm sm:overflow-hidden sm:rounded-md">
           <div className="space-y-6 bg-white px-4 py-6 sm:p-6">
             <h3 className="text-base font-semibold text-gray-900">Profile</h3>
@@ -149,7 +171,7 @@ export default function UserProfile() {
               <div className="col-span-3 sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-500">Username</label>
                 <div className="mt-2">
-                  <input name="username" type="text" value={user.username} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
+                <input name="username" type="text" value={user.username || ""} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
                 </div>
               </div>
               <div className="col-span-3">
@@ -163,32 +185,37 @@ export default function UserProfile() {
               </div>
             </div>
 
+
             <div className="grid grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-500">First name</label>
-                <input name="firstName" type="text" value={user.firstName} readOnly className="input-field w-full" />
-              </div>
+                <input name="firstName" type="text" value={user.firstName || ""} readOnly className="input-field w-full" />
+                </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Last name</label>
-                <input name="lastName" type="text" value={user.lastName} readOnly className="input-field w-full" />
-              </div>
+                <input name="lastName" type="text" value={user.lastName || ""} readOnly className="input-field w-full" />
+                </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Email address</label>
-                <input name="email" type="email" value={censorEmail(user.email)} readOnly className="input-field w-full" />
-              </div>
+                <input name="email" type="email" value={
+                  // censorEmail
+                  (user.email) || ""} readOnly className="input-field w-full" />
+                </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Phone</label>
-                <input name="phone" type="text" value={censorPhone(user.phone)} readOnly className="input-field w-full" />
-              </div>
+                <input name="phone" type="text" value={
+                  // censorPhone
+                  (user.phone) || ""} readOnly className="input-field w-full" />
+                </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Birthday</label>
-                <input name="birthday" type="date" value={user.birthday} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
+                <input name="birthday" type="date" value={user.birthday || ""} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
                 {error && <p className="text-red-500 text-sm">{error}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-500">Address</label>
-                <input name="address" type="text" value={user.address} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
-              </div>
+                <input name="address" type="text" value={user.address || ""} onChange={handleChange} disabled={!isEditing} className="input-field w-full" />
+                </div>
             </div>
           </div>
         </div>

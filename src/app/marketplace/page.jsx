@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import {
   Dialog,
   DialogBackdrop,
@@ -36,6 +36,9 @@ import {
   Squares2X2Icon,
 } from '@heroicons/react/20/solid'
 import Pagination from '@/components/common/Pagination'
+import Link from 'next/link'
+
+
 
 const sortOptions = [
   { name: 'Most Popular', href: '#', current: true },
@@ -88,37 +91,41 @@ const filters = [
     ],
   },
 ]
-const products = [
-  {
-    id: 1,
-    name: 'Nomad Pouch',
-    href: '/marketplace/item-sample',
-    price: '$50',
-    availability: 'White and Black',
-    imageSrc:
-      'https://tailwindui.com/plus-assets/img/ecommerce-images/category-page-07-product-01.jpg',
-    imageAlt:
-      'White fabric pouch with white zipper, black zipper pull, and black elastic loop.',
-  },
-  {
-    id: 2,
-    name: 'Zip Tote Basket',
-    href: '/marketplace/item-sample',
-    price: '$140',
-    availability: 'Washed Black',
-    imageSrc:
-      'https://tailwindui.com/plus-assets/img/ecommerce-images/category-page-07-product-02.jpg',
-    imageAlt:
-      'Front of tote bag with washed black canvas body, black straps, and tan leather handles and accents.',
-  },
-  // More products...
-]
+// const products = [
+//   {
+//     id: 1,
+//     name: 'Nomad Pouch',
+//     href: '/marketplace/item-sample',
+//     price: '$50',
+//     availability: 'White and Black',
+//     imageSrc:
+//       'https://tailwindui.com/plus-assets/img/ecommerce-images/category-page-07-product-01.jpg',
+//     imageAlt:
+//       'White fabric pouch with white zipper, black zipper pull, and black elastic loop.',
+//   },
+//   {
+//     id: 2,
+//     name: 'Zip Tote Basket',
+//     href: '/marketplace/item-sample',
+//     price: '$140',
+//     availability: 'Washed Black',
+//     imageSrc:
+//       'https://tailwindui.com/plus-assets/img/ecommerce-images/category-page-07-product-02.jpg',
+//     imageAlt:
+//       'Front of tote bag with washed black canvas body, black straps, and tan leather handles and accents.',
+//   },
+//   // More products...
+// ]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+
+
+export default function MarketPlace() {
+  const [products, setProducts] = useState([])
+
   const [currentPage, setCurrentPage] = useState(1)
   const totalPages = 10 // Change based on your total pages
 
@@ -127,7 +134,32 @@ export default function Example() {
     console.log('Navigated to page:', page)
     // You can also update the query params in the URL
   }
+
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`http://localhost:5223/api/Product/all`, {
+          method: 'GET',
+          credentials: 'include',
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`)
+        }
+
+        const data = await response.json()
+        console.log('GET API response:', data)
+        setProducts(data)
+      } catch (error) {
+        console.error('Fetch error:', error)
+      }
+    }
+
+    fetchProducts()
+  }, [])
+
 
   return (
     <div className="bg-white">
@@ -401,27 +433,32 @@ export default function Example() {
                   </Disclosure>
                 ))}
               </form>
-              {/* Product grid */}
+              {/* Product grid  done */}
               <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:col-span-3 lg:gap-x-8">
                 {products.map((product) => (
-                  <a
+                  <a 
                     key={product.id}
-                    href={product.href}
+                    href={`/marketplace/${product.id}`}
                     className="group text-sm"
                   >
                     <img
-                      alt={product.imageAlt}
-                      src={product.imageSrc}
+                      // alt={product.imageAlt}
+                      alt={product.name}
+                      src={product.imageUrls[0]}
                       className="aspect-square w-full rounded-lg bg-gray-100 object-cover group-hover:opacity-75"
                     />
                     <h3 className="mt-4 font-medium text-gray-900">
                       {product.name}
                     </h3>
                     <p className="text-gray-500 italic">
-                      {product.availability}
+                      {product.stockQuantity > 1
+                        ? "Available"
+                        : product.stockQuantity <= 0
+                          ? "Out of Stock"
+                          : "Limited Stock"}
                     </p>
                     <p className="mt-2 font-medium text-gray-900">
-                      {product.price}
+                      {product.price.toLocaleString()} VND
                     </p>
                   </a>
                 ))}
